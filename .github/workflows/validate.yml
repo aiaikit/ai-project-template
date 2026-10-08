@@ -1,0 +1,37 @@
+name: Validate Template
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required directories exist
+        run: |
+          for dir in .github/workflows .github/ISSUE_TEMPLATE .aiaikit .specify/memory .specify/specs .specify/templates .specify/scripts docs/project docs/research docs/architecture docs/adr docs/design prototypes; do
+            if [ ! -d "$dir" ]; then echo "Missing: $dir"; exit 1; fi
+          done
+
+      - name: Check required files exist
+        run: |
+          for file in AGENTS.md .aiaikit/project.yaml .specify/memory/constitution.md .specify/templates/research-template.md .specify/templates/architecture-template.md .specify/templates/adr-template.md .specify/templates/prototype-template.md docs/project/vision.md docs/project/glossary.md docs/project/roadmap.md docs/project/changelog.md prototypes/README.md .editorconfig .gitignore; do
+            if [ ! -f "$file" ]; then echo "Missing: $file"; exit 1; fi
+          done
+
+      - name: Validate YAML files
+        run: |
+          for f in $(find . -name "*.yml" -o -name "*.yaml"); do
+            python3 -c "import yaml; yaml.safe_load(open('$f'))" || echo "Invalid YAML: $f"
+          done
+
+      - name: Check Markdown files have valid structure
+        run: |
+          for f in $(find . -name "*.md" -not -path "./tmp/*"); do
+            if [ ! -s "$f" ]; then echo "Empty: $f"; fi
+          done

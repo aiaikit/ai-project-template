@@ -1,0 +1,32 @@
+version: 1
+
+project:
+  name: ""
+  type: ""
+
+stack:
+  frontend:
+    framework: ""
+    language: ""
+
+  backend:
+    language: ""
+    framework: ""
+
+  database:
+    type: ""
+
+development:
+  sdd: true
+  prototype: true
+
+spec_kit:
+  enabled: true
+  version: ""
+
+template:
+  name: ai-project-template
+  version: "1.0.0"
+
+aiaikit:
+  version: ""
